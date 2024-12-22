@@ -30,7 +30,7 @@ export default function LandingPage() {
       <section id="home" className="relative bg-blue-500 text-white h-[500px] flex items-center">
         <div className="container mx-auto px-6">
           <h2 className="text-5xl font-extrabold mb-4">
-            Your Health, Our Priority
+            Your Health, Our Priority iiiii
           </h2>
           <p className="text-lg mb-6">
             Find medicines, wellness products, and healthcare essentials online
