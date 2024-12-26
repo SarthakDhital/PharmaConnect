@@ -1,80 +1,84 @@
-'use client'
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+// pages/products.js
+"use client"
+import { useState } from 'react';
+import Nav from "../components/nav";
+import Footer from "../components/Footer";
 
-// Dummy product data (you can fetch this from an API)
-const product = {
-  id: 1,
-  name: "Product Name",
-  description: "This is a description of the product.",
-  price: 29.99,
-  image: "https://via.placeholder.com/500", // Replace with your image URL
-};
+const products = [
+  { id: 1, name: 'Aspirin', category: 'Pain Relief', price: 12.99 },
+  { id: 2, name: 'Cough Syrup', category: 'Cough & Cold', price: 8.99 },
+  { id: 3, name: 'Vitamins', category: 'Supplements', price: 15.49 },
+  { id: 4, name: 'Antiseptic', category: 'First Aid', price: 5.99 },
+  { id: 5, name: 'Allergy Medicine', category: 'Allergy', price: 9.99 },
+  { id: 6, name: 'Face Mask', category: 'Personal Care', price: 3.49 },
+  // Add more products as needed
+];
 
-export default function ProductDetail() {
-  const [quantity, setQuantity] = useState(1);
-  const [cart, setCart] = useState([]);
-  const router = useRouter();
+const categories = ['All', 'Pain Relief', 'Cough & Cold', 'Supplements', 'First Aid', 'Allergy', 'Personal Care'];
 
-  const handleAddToCart = () => {
-    // Add the product to the cart
-    const newCart = [...cart, { ...product, quantity }];
-    setCart(newCart);
-    alert("Added to cart!");
-  };
+const ProductList = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="max-w-4xl mx-auto my-8 p-4">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Product Image */}
-        <div className="flex justify-center items-center">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="max-w-full rounded-lg shadow-lg"
+     <div className="bg-gray-50 text-gray-800">
+          <Nav/>
+    
+    <div className="bg-white min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-4">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Product List</h1>
+
+        {/* Search Bar and Filters */}
+        <div className="mb-6 flex justify-between items-center">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="p-2 border border-gray-300 rounded w-1/3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
-
-        {/* Product Details */}
-        <div className="space-y-4">
-          <h1 className="text-3xl font-semibold">{product.name}</h1>
-          <p className="text-gray-700">{product.description}</p>
-          <p className="text-xl font-bold text-green-600">${product.price.toFixed(2)}</p>
-
-          {/* Quantity Selector */}
-          <div className="flex items-center space-x-4">
-            <label htmlFor="quantity" className="text-lg font-medium">Quantity:</label>
-            <input
-              type="number"
-              id="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              min="1"
-              className="w-16 p-2 border border-gray-300 rounded-md"
-            />
-          </div>
-
-          {/* Add to Cart Button */}
-          <button
-            onClick={handleAddToCart}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
+          {/* Category Filter */}
+          <select
+            className="p-2 border border-gray-300 rounded text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
           >
-            Add to Cart
-          </button>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
 
-      {/* Cart Display (Optional) */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold">Cart</h2>
-        <ul className="list-disc pl-6">
-          {cart.map((item, index) => (
-            <li key={index} className="text-lg">
-              {item.name} x {item.quantity} - ${item.price * item.quantity}
-            </li>
-          ))}
-        </ul>
+        {/* Product List */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <div key={product.id} className="border border-gray-200 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
+                <p className="text-gray-500">{product.category}</p>
+                <p className="text-lg font-bold text-green-600">${product.price}</p>
+                <button className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  Add to Cart
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500">No products found</p>
+          )}
+        </div>
       </div>
     </div>
+    <Footer />
+    </div>
   );
-}
+};
+
+export default ProductList;

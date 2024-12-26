@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import React from 'react'
-
+import Nav from "../components/nav";
+import Footer from '../components/Footer';
 const page = () => {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className='header'>
+      <Nav/>   
+    <div className="flex justify-center items-center min-h-screen bg-gray-100" >
       <div className="bg-white shadow-lg rounded-lg p-6 w-96">
         <h2 className="text-3xl font-semibold text-center mb-4 text-black">Log In</h2>
-
         {/* Input Fields */}
         <div className="space-y-4">
           <input
@@ -24,7 +26,7 @@ const page = () => {
         {/* Log In Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-semibold mt-4 py-2 rounded hover:bg-blue-700 transition duration-300"
+          className="w-full bg-sereneBlue-700 text-white font-semibold mt-4 py-2 rounded hover:bg-blue-700 transition duration-300"
         >
           Log In
         </button>
@@ -49,6 +51,10 @@ const page = () => {
           Create new account
         </button>
         </Link>
+      </div>
+    </div>
+    <div className='footer'>
+      <Footer/>   
       </div>
     </div>
   )

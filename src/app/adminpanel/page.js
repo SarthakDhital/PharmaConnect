@@ -1,137 +1,76 @@
-import { useState } from 'react';
+import Head from "next/head";
 
-export default function Admin() {
-  const [items, setItems] = useState([
-    { id: 1, name: 'Aspirin', price: 5, quantity: 20 },
-    { id: 2, name: 'Ibuprofen', price: 3, quantity: 50 },
-  ]);
-
-  const [newItem, setNewItem] = useState({ name: '', price: '', quantity: '' });
-  const [editItem, setEditItem] = useState(null);
-
-  const handleAddItem = () => {
-    const item = { ...newItem, id: Date.now() };
-    setItems([...items, item]);
-    setNewItem({ name: '', price: '', quantity: '' });
-  };
-
-  const handleEditItem = () => {
-    const updatedItems = items.map((item) =>
-      item.id === editItem.id ? { ...item, ...editItem } : item
-    );
-    setItems(updatedItems);
-    setEditItem(null);
-  };
-
-  const handleDeleteItem = (id) => {
-    const filteredItems = items.filter((item) => item.id !== id);
-    setItems(filteredItems);
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-semibold text-center mb-6">Admin Panel - Pharmacy</h1>
+    <>
+      <Head>
+        <title>Admin Panel</title>
+      </Head>
+      <div className="flex">
+        {/* Sidebar */}
+        <aside className="fixed top-0 left-0 h-screen w-64 bg-blue-800 text-white">
+          <nav>
+            <ul>
+              <li className="p-4 hover:bg-blue-700">Dashboard</li>
+              <li className="p-4 hover:bg-blue-700">Components</li>
+              <li className="p-4 hover:bg-blue-700">Admin Profile</li>
+              <li className="p-4 hover:bg-blue-700">Utilities</li>
+              <li className="p-4 hover:bg-blue-700">Pages</li>
+              <li className="p-4 hover:bg-blue-700">Charts</li>
+              <li className="p-4 hover:bg-blue-700">Tables</li>
+            </ul>
+          </nav>
+        </aside>
 
-        {/* Add Item Section */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-medium mb-4">Add New Item</h2>
-          <input
-            type="text"
-            className="block w-full p-2 border border-gray-300 rounded-md mb-2"
-            placeholder="Item Name"
-            value={newItem.name}
-            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-          />
-          <input
-            type="number"
-            className="block w-full p-2 border border-gray-300 rounded-md mb-2"
-            placeholder="Price"
-            value={newItem.price}
-            onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-          />
-          <input
-            type="number"
-            className="block w-full p-2 border border-gray-300 rounded-md mb-4"
-            placeholder="Quantity"
-            value={newItem.quantity}
-            onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
-          />
-          <button
-            onClick={handleAddItem}
-            className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          >
-            Add Item
-          </button>
-        </div>
-
-        {/* Edit Item Section */}
-        {editItem && (
-          <div className="mb-6">
-            <h2 className="text-2xl font-medium mb-4">Edit Item</h2>
-            <input
-              type="text"
-              className="block w-full p-2 border border-gray-300 rounded-md mb-2"
-              value={editItem.name}
-              onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
-            />
-            <input
-              type="number"
-              className="block w-full p-2 border border-gray-300 rounded-md mb-2"
-              value={editItem.price}
-              onChange={(e) => setEditItem({ ...editItem, price: e.target.value })}
-            />
-            <input
-              type="number"
-              className="block w-full p-2 border border-gray-300 rounded-md mb-4"
-              value={editItem.quantity}
-              onChange={(e) => setEditItem({ ...editItem, quantity: e.target.value })}
-            />
-            <button
-              onClick={handleEditItem}
-              className="w-full py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600"
-            >
-              Save Changes
-            </button>
+        {/* Main Content */}
+        <main className="ml-64 flex-1 p-6 bg-gray-900 text-gray-100">
+          <div className="bg-gray-800 p-4 rounded shadow">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-lg font-bold">Admin Profile</h1>
+              <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Add Admin Profile
+              </button>
+            </div>
+            <table className="min-w-full border-collapse border border-gray-700">
+              <thead className="bg-gray-700">
+                <tr>
+                  <th className="border border-gray-700 px-4 py-2 text-left">ID</th>
+                  <th className="border border-gray-700 px-4 py-2 text-left">Username</th>
+                  <th className="border border-gray-700 px-4 py-2 text-left">Email</th>
+                  <th className="border border-gray-700 px-4 py-2 text-left">Password</th>
+                  <th className="border border-gray-700 px-4 py-2 text-left">Edit</th>
+                  <th className="border border-gray-700 px-4 py-2 text-left">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { id: 1, username: "ved", email: "ved@gmail.com", password: "1234" },
+                  { id: 2, username: "funda", email: "funda@gmail.com", password: "1234" },
+                  { id: 3, username: "Funda2", email: "g@g.c", password: "1234" },
+                  { id: 4, username: "Ved 2", email: "ved2@gmail.com", password: "1236" },
+                ].map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-700">
+                    <td className="border border-gray-700 px-4 py-2">{user.id}</td>
+                    <td className="border border-gray-700 px-4 py-2">{user.username}</td>
+                    <td className="border border-gray-700 px-4 py-2">{user.email}</td>
+                    <td className="border border-gray-700 px-4 py-2">{user.password}</td>
+                    <td className="border border-gray-700 px-4 py-2">
+                      <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+                        Edit
+                      </button>
+                    </td>
+                    <td className="border border-gray-700 px-4 py-2">
+                      <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-
-        {/* Items List */}
-        <h2 className="text-2xl font-medium mb-4">Items List</h2>
-        <table className="w-full table-auto border-collapse">
-          <thead>
-            <tr>
-              <th className="border p-2">Item Name</th>
-              <th className="border p-2">Price</th>
-              <th className="border p-2">Quantity</th>
-              <th className="border p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td className="border p-2">{item.name}</td>
-                <td className="border p-2">${item.price}</td>
-                <td className="border p-2">{item.quantity}</td>
-                <td className="border p-2 flex space-x-2">
-                  <button
-                    onClick={() => setEditItem(item)}
-                    className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteItem(item.id)}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </main>
       </div>
-    </div>
+    </>
   );
 }
