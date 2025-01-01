@@ -1,23 +1,20 @@
-'use client'
+'use client';
+
 import React, { useState } from "react";
 import Image from "next/image";
 import Nav from "./components/nav";
 import Footer from "./components/Footer";
 
 export default function LandingPage() {
-  const [hoveredProduct, setHoveredProduct] = useState(null);
+  // const [hoveredProduct, setHoveredProduct] = useState(null);
 
   return (
     <div className="bg-gray-50 text-gray-800">
       <Nav />
 
       {/* Hero Section */}
-      <section
-        id="home"
-        className="relative bg-sereneBlue-700 text-white h-[524px] flex items-center bg-cover bg-center bg-no-repeat overflow-hidden"
-        style={{ backgroundImage: "url('/hello.jpg')" }}
-      >
-        <div className="container mx-auto px-6 text-center">
+      <div id="home" className="relative bg-sereneBlue-700 text-white h-[524px] flex items-center bg-cover bg-center bg-no-repeat overflow-hidden" style={{ backgroundImage: "url('/hello.jpg')" }}>
+        <section className="container mx-auto px-6 text-center">
           <h2 className="text-5xl font-extrabold mb-4 animate-fade-in">Your Health, Our Priority</h2>
           <p className="text-lg mb-6 animate-slide-up">
             Find medicines, wellness products, and healthcare essentials online with fast delivery and trusted service.
@@ -28,8 +25,8 @@ export default function LandingPage() {
           >
             Shop Now
           </a>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {/* Services Section */}
       <section id="services" className="bg-blue-50 py-16">
@@ -95,24 +92,6 @@ function ServiceCard({ title, description }) {
 }
 
 // Mock Data
-const products = [
-  {
-    imageSrc: "/product1.png",
-    title: "Eventone-C Cream 30gm",
-    price: "Rs 2750",
-  },
-  {
-    imageSrc: "/product2.png",
-    title: "Plum 2% Niacinamide SPF 50",
-    price: "Rs 574.56",
-  },
-  {
-    imageSrc: "/product3.png",
-    title: "Insulin Mixtard 30 HM",
-    price: "Rs 631.79",
-  },
-];
-
 const services = [
   {
     title: "Fast Delivery",
