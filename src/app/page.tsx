@@ -1,101 +1,203 @@
+'use client';
+
+import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="bg-gray-50 text-gray-800">
+      <Header />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
+      <div
+        id="home"
+        className="relative bg-sereneBlue-700 text-white h-[605px] flex items-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/vis/hello.jpg')" }}
+      >
+        <section className="container mx-auto px-6 text-center">
+          <h2 className="text-5xl font-extrabold mb-4">
+            Your Health, Our Priority
+          </h2>
+          <p className="text-lg mb-6">
+            Find medicines, wellness products, and healthcare essentials online with fast delivery and trusted service.
+          </p>
           <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="./product"
+            className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-6 py-3 rounded font-bold transition duration-300"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            Shop Now
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        </section>
+      </div>
+
+      <motion.section
+        id="services"
+        className="bg-blue-50 py-16"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false }}
+      >
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-10 text-indigo-700">
+            Our Services
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.2,
+                  ease: "easeOut",
+                }}
+                viewport={{ once: false }}
+              >
+                <ServiceCard {...service} />
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+      </motion.section>
+
+      <motion.section
+        id="features"
+        className="bg-white py-16"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1, ease: "easeInOut" }}
+        viewport={{ once: false }}
+      >
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-10 text-indigo-700">
+            Why Choose Us
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-100 rounded-lg shadow-lg p-6 text-center"
+                initial={{ scale: 0.9 }}
+                whileInView={{ scale: 1 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+              >
+                <h3 className="text-xl font-bold text-blue-600 mb-4">
+                  {feature.title}
+                </h3>
+                <p>{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section
+        id="testimonials"
+        className="bg-gray-50 py-16"
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false }}
+      >
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-10 text-indigo-700">
+            What Our Customers Say
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="bg-white rounded-lg shadow-md p-6"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+              >
+                <p className="italic">“{testimonial.feedback}”</p>
+                <h4 className="mt-4 font-bold">- {testimonial.name}</h4>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section
+        className="bg-indigo-700 text-white py-16 text-center"
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: false }}
+      >
+        <h2 className="text-4xl font-bold mb-4">Stay Healthy with Us</h2>
+        <p className="mb-6">
+          Shop your healthcare essentials now and get exclusive offers!
+        </p>
         <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="./login"
+          className="bg-yellow-400 hover:bg-yellow-500 px-6 py-3 text-gray-800 font-bold rounded transition duration-300"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          Explore Products
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </motion.section>
+
+      <Footer />
     </div>
   );
 }
+
+function ServiceCard({ title, description }) {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6 text-center transition transform hover:-translate-y-2 duration-300">
+      <h3 className="text-2xl font-bold mb-4 text-blue-600">{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+
+const services = [
+  {
+    title: "Fast Delivery",
+    description: "Get your medicines delivered to your doorstep quickly.",
+  },
+  {
+    title: "24/7 Support",
+    description: "We are available 24/7 to assist with your healthcare needs.",
+  },
+  {
+    title: "Genuine Medicines",
+    description: "We provide 100% genuine and verified products.",
+  },
+];
+
+const features = [
+  {
+    title: "Trusted Service",
+    description: "We have served thousands of happy customers.",
+  },
+  {
+    title: "Affordable Prices",
+    description: "Get the best deals on all healthcare essentials.",
+  },
+  {
+    title: "Wide Selection",
+    description: "Choose from a vast array of products.",
+  },
+  {
+    title: "Easy Returns",
+    description: "Hassle-free return policy for your convenience.",
+  },
+];
+
+const testimonials = [
+  {
+    feedback: "Great service and quick delivery. Highly recommended!",
+    name: "John Doe",
+  },
+  {
+    feedback: "The quality of products is excellent. Will buy again!",
+    name: "Jane Smith",
+  },
+];
