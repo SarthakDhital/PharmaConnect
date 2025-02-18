@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { IoCartSharp } from "react-icons/io5";
 import { VscAccount } from "react-icons/vsc";
+import { FaHome } from "react-icons/fa";
 
 const Header = () => {
   const [isLoginPage, setIsLoginPage] = useState(false);
@@ -45,24 +46,24 @@ const Header = () => {
           <ul className="flex space-x-6 items-center">
             <li>
               <Link href="/cart" className="hover:text-gray-300 flex items-center">
-                <div className="border border-black p-3 rounded-full flex items-center justify-center w-12 h-12">
-                  <IoCartSharp className="text-2xl" />
+                <div className="border-2 border-gray-300 hover:border-gray-500 p-3 rounded-full flex items-center justify-center w-12 h-12 transition-colors duration-300">
+                  <IoCartSharp className="text-3xl" />
                 </div>
               </Link>
             </li>
             {!isLoginPage && (
               <li>
                 <Link href="/home" className="hover:text-gray-300 flex items-center">
-                  <div className="border border-black p-3 rounded-full flex items-center justify-center px-5 py-2">
-                    <span className="text-lg font-medium">Home</span>
+                  <div className="border-2 border-gray-300 hover:border-gray-500 p-3 rounded-full flex items-center justify-center w-12 h-12 transition-colors duration-300">
+                    <FaHome className="text-3xl" />
                   </div>
                 </Link>
               </li>
             )}
             <li>
               <Link href="/login" className="hover:text-gray-300 flex items-center">
-                <div className="border border-black p-3 rounded-full flex items-center justify-center w-12 h-12">
-                  <VscAccount className="text-2xl" />
+                <div className="border-2 border-gray-300 hover:border-gray-500 p-3 rounded-full flex items-center justify-center w-12 h-12 transition-colors duration-300">
+                  <VscAccount className="text-3xl" />
                 </div>
               </Link>
             </li>
