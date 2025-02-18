@@ -40,7 +40,7 @@ const PharmacistSignup = () => {
 
     try {
       const res = await axios.post(
-        "https://pharmaconnect-backend.onrender.com/pharma/Pregister",
+        "https://pharmaconnect-backend.onrender.com/pharma/pregister",
         formData
       );
 

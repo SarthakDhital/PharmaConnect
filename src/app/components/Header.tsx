@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { IoCartSharp } from "react-icons/io5";
+import { VscAccount } from "react-icons/vsc";
 
 const Header = () => {
   const [isLoginPage, setIsLoginPage] = useState(false);
@@ -30,10 +31,7 @@ const Header = () => {
     <header className="bg-sereneBlue-700 text-white shadow-md fixed w-full top-0 z-50">
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
         <div className="relative">
-          <Link
-            href="/"
-            className="opacity-80 hover:opacity-100 transition-opacity duration-300"
-          >
+          <Link href="/" className="opacity-80 hover:opacity-100 transition-opacity duration-300">
             <Image
               src="/vis/logo.jpg"
               width={100}
@@ -44,30 +42,30 @@ const Header = () => {
           </Link>
         </div>
         <nav>
-          <ul className="flex space-x-4 items-center">
+          <ul className="flex space-x-6 items-center">
             <li>
               <Link href="/cart" className="hover:text-gray-300 flex items-center">
-                <div className="border border-black p-2 rounded-full flex items-center justify-center w-10 h-10">
-                  <IoCartSharp className="text-xl" />
-                </div>
-              </Link>
-            </li>
-            <li>
-              <Link href="/home" className="hover:text-gray-300 flex items-center">
-                <div className="border border-black p-2 rounded-full flex items-center justify-center px-4 py-2">
-                  Home
+                <div className="border border-black p-3 rounded-full flex items-center justify-center w-12 h-12">
+                  <IoCartSharp className="text-2xl" />
                 </div>
               </Link>
             </li>
             {!isLoginPage && (
               <li>
-                <Link href="/login" className="hover:text-gray-300 flex items-center">
-                  <div className="border border-black p-2 rounded-full flex items-center justify-center px-4 py-2">
-                    Log In
+                <Link href="/home" className="hover:text-gray-300 flex items-center">
+                  <div className="border border-black p-3 rounded-full flex items-center justify-center px-5 py-2">
+                    <span className="text-lg font-medium">Home</span>
                   </div>
                 </Link>
               </li>
             )}
+            <li>
+              <Link href="/login" className="hover:text-gray-300 flex items-center">
+                <div className="border border-black p-3 rounded-full flex items-center justify-center w-12 h-12">
+                  <VscAccount className="text-2xl" />
+                </div>
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

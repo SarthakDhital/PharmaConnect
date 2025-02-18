@@ -1,30 +1,42 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Image from "next/image";
+import Link from "next/link";
 
-const categories = ["All", "Pain Relief", "Cough & Cold", "Supplements", "First Aid", "Allergy", "Personal Care"];
+const categories = [
+  "All",
+  "Pain Relief",
+  "Cough & Cold",
+  "Supplements",
+  "First Aid",
+  "Allergy",
+  "Personal Care",
+];
 
 const ProductList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [products, setProducts] = useState([]); // State for fetched products
-  const [filteredProducts, setFilteredProducts] = useState([]); // State for filtered products
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // const response = await axios.get("/api/products"); // Replace with your actual API endpoint
-        setProducts(response.data);
-        setFilteredProducts(response.data);
+        const response = await axios.get("https://pharmaconnect-backend.onrender.com/products/getAllProduct");
+        setProducts(response.data.data);
+        setFilteredProducts(response.data.data);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        setError("Error fetching products");
+        setLoading(false);
       }
     };
-
     fetchProducts();
   }, []);
 
@@ -33,11 +45,15 @@ const ProductList = () => {
       const matchesSearch =
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.category.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "All" || product.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, products]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="bg-gray-50 text-gray-800">
@@ -67,7 +83,7 @@ const ProductList = () => {
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div
-                  key={product.id}
+                  key={product._id}
                   className="border border-gray-200 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
                   <Image
@@ -76,13 +92,16 @@ const ProductList = () => {
                     className="w-full h-40 object-cover rounded-md mb-4"
                     width={245}
                     height={300}
+                    unoptimized
                   />
                   <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
                   <p className="text-gray-500">{product.category}</p>
                   <p className="text-lg font-bold text-green-600">${product.price}</p>
-                  <button className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    Add to Cart
-                  </button>
+                  <Link href={`../productdetails/${product._id}`}>
+                    <button className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      View Details
+                    </button>
+                  </Link>
                 </div>
               ))
             ) : (

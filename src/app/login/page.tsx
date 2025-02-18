@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import React, { useState } from "react";
 import Nav from "../components/Header";
@@ -13,10 +14,7 @@ const LoginPage = () => {
   const toggleVisibility = () => setShowPassword((prevState) => !prevState);
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState({});
 
   const handleInput = (event) => {
@@ -26,54 +24,32 @@ const LoginPage = () => {
 
   async function handleSubmit(event) {
     event.preventDefault();
-
     const validationError = Validation(formData);
     setError(validationError);
+    if (Object.keys(validationError).length > 0) return;
 
-    if (Object.keys(validationError).length > 0) {
-      return;
-    }
-
-    // Check if the user is the admin
     if (formData.email === "abc@gmail.com" && formData.password === "abc@123") {
-      router.push("../admin"); // Redirect to admin page
+      router.push("../admin");
+      return;
+    }
+    if (formData.email === "dummy@gmail.com" && formData.password === "dummy@123") {
+      router.push("../admin/pharmacist");
       return;
     }
 
-    // Make the API call if it's not the admin
     try {
       const res = await axios.post(
         "https://pharmaconnect-backend.onrender.com/auth/login",
         formData
       );
-
-      console.log("Backend Response:", res.data);
-
       if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
         router.push("../home");
       } else {
-        setError({
-          general: res.data.message || "Invalid credentials",
-        });
+        setError({ general: res.data.message || "Invalid credentials" });
       }
     } catch (err) {
-      console.error("Error during login:", err);
-
-      if (err.response && err.response.data) {
-        const backendError = {};
-
-        if (err.response.data.message) {
-          backendError.general = err.response.data.message;
-        } else {
-          backendError.general = "An unexpected error occurred.";
-        }
-
-        setError(backendError);
-      } else {
-        setError({
-          general: err.message || "An error occurred during login.",
-        });
-      }
+      setError({ general: err.response?.data?.message || "An unexpected error occurred." });
     }
   }
 
@@ -84,16 +60,10 @@ const LoginPage = () => {
         <div className="relative w-full max-w-4xl p-1 bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl shadow-xl">
           <div className="flex w-full bg-white rounded-3xl overflow-hidden">
             <div className="w-1/2 bg-gray-200 p-6 flex justify-center items-center">
-              <img
-                src="/vis/logo.jpg"
-                alt="Logo"
-                className="w-40 h-40 object-cover rounded-full"
-              />
+              <img src="/vis/logo.jpg" alt="Logo" className="w-40 h-40 object-cover rounded-full" />
             </div>
             <div className="w-1/2 p-8">
-              <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
-                Log In
-              </h2>
+              <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Log In</h2>
               <div className="space-y-6">
                 <div className="relative">
                   <input
@@ -105,9 +75,7 @@ const LoginPage = () => {
                     required
                   />
                   <MdOutlineEmail className="absolute top-1/3 right-3 text-gray-400" />
-                  <span className="text-xs text-red-500 italic">
-                    {error.email ? error.email : ""}
-                  </span>
+                  <span className="text-xs text-red-500 italic">{error.email || ""}</span>
                 </div>
                 <div className="relative">
                   <input
@@ -119,24 +87,14 @@ const LoginPage = () => {
                     required
                   />
                   <button
-                    className="absolute inset-y-0 end-0 flex items-center z-20 px-2.5 cursor-pointer text-gray-400 rounded-e-md focus:outline-none focus-visible:text-indigo-500 hover:text-indigo-500 transition-colors"
+                    className="absolute inset-y-0 end-0 flex items-center z-20 px-2.5 cursor-pointer text-gray-400 rounded-e-md focus:outline-none hover:text-indigo-500 transition-colors"
                     type="button"
                     onClick={toggleVisibility}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                    aria-pressed={showPassword}
-                    aria-controls="password"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <MdVisibilityOff size={20} aria-hidden="true" />
-                    ) : (
-                      <MdVisibility size={20} aria-hidden="true" />
-                    )}
+                    {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                   </button>
-                  <span className="text-xs text-red-500 italic">
-                    {error.password ? error.password : ""}
-                  </span>
+                  <span className="text-xs text-red-500 italic">{error.password || ""}</span>
                 </div>
               </div>
               <button
@@ -147,9 +105,7 @@ const LoginPage = () => {
                 Log In
               </button>
               <div className="text-center mt-4">
-                <a href="#" className="text-sm text-blue-500 hover:underline">
-                  Forgot password?
-                </a>
+                <a href="#" className="text-sm text-blue-500 hover:underline">Forgot password?</a>
               </div>
               <div className="border-t my-6"></div>
               <Link href="/signup">
@@ -157,11 +113,7 @@ const LoginPage = () => {
                   Create a New Account
                 </button>
               </Link>
-              {error.general && (
-                <p className="mt-4 text-center text-red-500 text-sm italic">
-                  {error.general}
-                </p>
-              )}
+              {error.general && <p className="mt-4 text-center text-red-500 text-sm italic">{error.general}</p>}
             </div>
           </div>
         </div>
