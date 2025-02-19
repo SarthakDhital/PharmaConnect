@@ -1,57 +1,57 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import React, { useState } from "react";
-import Nav from "../components/Header";
-import Footer from "../components/Footer";
-import { MdVisibility, MdOutlineEmail, MdVisibilityOff } from "react-icons/md";
-import Validation from "./loginValidation";
-import axios from "axios";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import React, { useState } from 'react';
+import Nav from '../components/Header';
+import Footer from '../components/Footer';
+import { MdVisibility, MdOutlineEmail, MdVisibilityOff } from 'react-icons/md';
+import Validation from './loginValidation';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const toggleVisibility = () => setShowPassword((prevState) => !prevState);
+  const toggleVisibility = () => setShowPassword((prev) => !prev);
   const router = useRouter();
 
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState({});
 
   const handleInput = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
-    setError({ ...error, [event.target.name]: "" });
+    setError({ ...error, [event.target.name]: '' });
   };
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const validationError = Validation(formData);
     setError(validationError);
     if (Object.keys(validationError).length > 0) return;
 
-    if (formData.email === "abc@gmail.com" && formData.password === "abc@123") {
-      router.push("../admin");
+    if (formData.email === 'abc@gmail.com' && formData.password === 'abc@123') {
+      router.push('../admin');
       return;
     }
-    if (formData.email === "dummy@gmail.com" && formData.password === "dummy@123") {
-      router.push("../admin/pharmacist");
+    if (formData.email === 'dummy@gmail.com' && formData.password === 'dummy@123') {
+      router.push('../admin/pharmacist');
       return;
     }
 
     try {
       const res = await axios.post(
-        "https://pharmaconnect-backend.onrender.com/auth/login",
+        'https://pharmaconnect-backend.onrender.com/auth/login',
         formData
       );
       if (res.data.success) {
-        localStorage.setItem("token", res.data.token);
-        router.push("../home");
+        localStorage.setItem('token', res.data.data.token);
+        router.push('../home');
       } else {
-        setError({ general: res.data.message || "Invalid credentials" });
+        setError({ general: res.data.message || 'Invalid credentials' });
       }
     } catch (err) {
-      setError({ general: err.response?.data?.message || "An unexpected error occurred." });
+      setError({ general: err.response?.data?.message || 'An unexpected error occurred.' });
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -75,11 +75,11 @@ const LoginPage = () => {
                     required
                   />
                   <MdOutlineEmail className="absolute top-1/3 right-3 text-gray-400" />
-                  <span className="text-xs text-red-500 italic">{error.email || ""}</span>
+                  <span className="text-xs text-red-500 italic">{error.email || ''}</span>
                 </div>
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
                     name="password"
                     onChange={handleInput}
@@ -90,11 +90,10 @@ const LoginPage = () => {
                     className="absolute inset-y-0 end-0 flex items-center z-20 px-2.5 cursor-pointer text-gray-400 rounded-e-md focus:outline-none hover:text-indigo-500 transition-colors"
                     type="button"
                     onClick={toggleVisibility}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                   </button>
-                  <span className="text-xs text-red-500 italic">{error.password || ""}</span>
+                  <span className="text-xs text-red-500 italic">{error.password || ''}</span>
                 </div>
               </div>
               <button
@@ -113,7 +112,9 @@ const LoginPage = () => {
                   Create a New Account
                 </button>
               </Link>
-              {error.general && <p className="mt-4 text-center text-red-500 text-sm italic">{error.general}</p>}
+              {error.general && (
+                <p className="mt-4 text-center text-red-500 text-sm italic">{error.general}</p>
+              )}
             </div>
           </div>
         </div>

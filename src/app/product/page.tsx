@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -28,7 +28,9 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://pharmaconnect-backend.onrender.com/products/getAllProduct");
+        const response = await axios.get(
+          "https://pharmaconnect-backend.onrender.com/products/getAllProduct"
+        );
         setProducts(response.data.data);
         setFilteredProducts(response.data.data);
         setLoading(false);
@@ -75,7 +77,9 @@ const ProductList = () => {
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
               {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
+                <option key={category} value={category}>
+                  {category}
+                </option>
               ))}
             </select>
           </div>
@@ -97,7 +101,7 @@ const ProductList = () => {
                   <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
                   <p className="text-gray-500">{product.category}</p>
                   <p className="text-lg font-bold text-green-600">${product.price}</p>
-                  <Link href={`../productdetails/${product._id}`}>
+                  <Link href={`/productdetails/${product._id}`}>
                     <button className="mt-4 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                       View Details
                     </button>
