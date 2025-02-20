@@ -6,18 +6,23 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import useAuth from "../components/UserAuth";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
+    console.log("Fetching products...");
     const token = localStorage.getItem("token");
 
     if (!token) {
+      console.log("No token found, redirecting to login...");
       router.push("/login");
       return;
     }
@@ -26,27 +31,52 @@ const Home = () => {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized");
+        if (!res.ok) {
+          if (res.status === 401) {
+            console.log("Session expired, logging out...");
+            localStorage.removeItem("token");
+            router.push("/login");
+          }
+          throw new Error("Unauthorized");
+        }
         return res.json();
       })
       .then((data) => {
+        console.log("Products fetched successfully", data);
         setProducts(data.data);
         const shuffledProducts = data.data.sort(() => 0.5 - Math.random());
         setFeaturedProducts(shuffledProducts.slice(0, 4));
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("Error fetching products:", err);
         setError("Error fetching products");
         setLoading(false);
       });
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  const handleLogoutClick = () => {
+    console.log("Logout clicked");
+    setShowLogoutPopup(true);
+  };
+
+  const handleConfirmLogout = () => {
+    console.log("User confirmed logout");
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+
+  const handleCancelLogout = () => {
+    console.log("User cancelled logout");
+    setShowLogoutPopup(false);
+  };
+
+  if (loading || authLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div className="bg-gray-50 text-gray-800">
-      <Header />
+      <Header onLogoutClick={handleLogoutClick} user={user} />
 
       <section
         id="home"
@@ -75,6 +105,28 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {showLogoutPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <div className="bg-white text-gray-900 p-6 rounded-lg shadow-lg">
+            <p className="text-lg">Are you sure you want to logout?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleConfirmLogout}
+                className="px-4 py-2 rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-red-500 hover:text-white mr-2"
+              >
+                Yes
+              </button>
+              <button
+                onClick={handleCancelLogout}
+                className="px-4 py-2 rounded-lg text-gray-900 bg-white border border-gray-300 hover:bg-green-600 hover:text-white"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
