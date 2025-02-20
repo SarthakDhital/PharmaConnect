@@ -63,7 +63,7 @@ const Home = () => {
   const handleConfirmLogout = () => {
     console.log("User confirmed logout");
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push("../");
   };
 
   const handleCancelLogout = () => {

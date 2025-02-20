@@ -28,21 +28,22 @@ const LoginPage = () => {
     setError(validationError);
     if (Object.keys(validationError).length > 0) return;
 
-    if (formData.email === 'abc@gmail.com' && formData.password === 'abc@123') {
-      router.push('../admin');
-      return;
-    }
-    if (formData.email === 'dummy@gmail.com' && formData.password === 'dummy@123') {
-      router.push('../admin/pharmacist');
-      return;
-    }
-
     try {
       const res = await axios.post(
         'https://pharmaconnect-backend.onrender.com/auth/login',
         formData
       );
       if (res.data.success) {
+        if (formData.email === 'abc@gmail.com' && formData.password === 'abc@123') {
+          localStorage.setItem('token', res.data.data.token);
+          router.push('../admin');
+          return;
+        }
+        if (formData.email === 'dummy@gmail.com' && formData.password === 'dummy@123') {
+          localStorage.setItem('token', res.data.data.token);
+          router.push('../admin/pharmacist');
+          return;
+        }
         localStorage.setItem('token', res.data.data.token);
         router.push('../home');
       } else {
@@ -60,7 +61,11 @@ const LoginPage = () => {
         <div className="relative w-full max-w-4xl p-1 bg-gradient-to-r from-teal-400 to-blue-500 rounded-3xl shadow-xl">
           <div className="flex w-full bg-white rounded-3xl overflow-hidden">
             <div className="w-1/2 bg-gray-200 p-6 flex justify-center items-center">
-              <img src="/vis/logo.jpg" alt="Logo" className="w-40 h-40 object-cover rounded-full" />
+              <img
+                src="/vis/logo.jpg"
+                alt="Logo"
+                className="w-40 h-40 object-cover rounded-full"
+              />
             </div>
             <div className="w-1/2 p-8">
               <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Log In</h2>
@@ -77,6 +82,7 @@ const LoginPage = () => {
                   <MdOutlineEmail className="absolute top-1/3 right-3 text-gray-400" />
                   <span className="text-xs text-red-500 italic">{error.email || ''}</span>
                 </div>
+
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -96,6 +102,7 @@ const LoginPage = () => {
                   <span className="text-xs text-red-500 italic">{error.password || ''}</span>
                 </div>
               </div>
+
               <button
                 type="submit"
                 onClick={handleSubmit}
@@ -103,15 +110,21 @@ const LoginPage = () => {
               >
                 Log In
               </button>
+
               <div className="text-center mt-4">
-                <a href="#" className="text-sm text-blue-500 hover:underline">Forgot password?</a>
+                <a href="#" className="text-sm text-blue-500 hover:underline">
+                  Forgot password?
+                </a>
               </div>
+
               <div className="border-t my-6"></div>
+
               <Link href="/signup">
                 <button className="w-full bg-teal-500 text-white font-semibold py-3 rounded-lg hover:bg-teal-600 transition duration-300 shadow-md">
                   Create a New Account
                 </button>
               </Link>
+
               {error.general && (
                 <p className="mt-4 text-center text-red-500 text-sm italic">{error.general}</p>
               )}
