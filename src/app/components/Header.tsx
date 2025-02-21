@@ -21,7 +21,6 @@ const Header = ({ onLogoutClick, user }) => {
         currentPath.includes("signup") ||
         currentPath.includes("home")
       );
-      console.log("Current Path:", currentPath);
     };
 
     checkPath();
@@ -31,12 +30,10 @@ const Header = ({ onLogoutClick, user }) => {
 
   const handleProfileClick = () => {
     const token = localStorage.getItem("token");
-    console.log("Token:", token);
     if (!token) {
       router.push("/login");
     } else {
       setIsDropdownOpen(!isDropdownOpen);
-      console.log("Dropdown Open:", isDropdownOpen);
     }
   };
 

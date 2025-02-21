@@ -44,15 +44,11 @@ const ProductDetails = () => {
         "https://pharmaconnect-backend.onrender.com/cart/manageCart",
         { productId },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
+          headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
         }
       );
-      alert("Product added to cart successfully!");
-    } catch {
-      alert("Failed to add product to cart.");
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to add product to cart.");
     }
   };
 
@@ -70,9 +66,7 @@ const ProductDetails = () => {
       <Header />
       <main className="flex-grow py-16 bg-gray-50 mt-10">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-12 text-indigo-700">
-            Product Details
-          </h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-indigo-700">Product Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex justify-center items-center h-full">
               <div className="relative w-full h-64">

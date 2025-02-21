@@ -196,7 +196,7 @@ const PharmacistAdminPanel = () => {
                 value={newProduct.name}
                 onChange={handleInputChange}
                 placeholder="Product Name"
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <input
@@ -205,14 +205,14 @@ const PharmacistAdminPanel = () => {
                 value={newProduct.price}
                 onChange={handleInputChange}
                 placeholder="Price"
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <input
                 type="file"
                 name="image"
                 onChange={handleInputChange}
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <input
@@ -220,7 +220,7 @@ const PharmacistAdminPanel = () => {
                 name="expiryDate"
                 value={newProduct.expiryDate}
                 onChange={handleInputChange}
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <button
@@ -240,12 +240,12 @@ const PharmacistAdminPanel = () => {
             {successMessage && <div className="text-green-600 mb-4">{successMessage}</div>}
             <form onSubmit={handleUpdateProduct} className="space-y-6 max-w-2xl mx-auto">
               <input
-                type="text"
+                type="text-black"
                 name="name"
                 value={newProduct.name}
                 onChange={handleInputChange}
                 placeholder="Product Name"
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <input
@@ -254,21 +254,21 @@ const PharmacistAdminPanel = () => {
                 value={newProduct.price}
                 onChange={handleInputChange}
                 placeholder="Price"
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <input
                 type="file"
                 name="image"
                 onChange={handleInputChange}
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
               />
               <input
                 type="date"
                 name="expiryDate"
                 value={newProduct.expiryDate}
                 onChange={handleInputChange}
-                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm"
+                className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
               />
               <button

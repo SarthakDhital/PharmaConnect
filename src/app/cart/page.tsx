@@ -1,113 +1,193 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
+import useAuth from "../components/UserAuth";
+
+const accessToken = localStorage.getItem("token");
 
 const CartPage = () => {
-  const [cart, setCart] = useState([]);
+  const [cartData, setCartData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchCartData = async () => {
+    const fetchCart = async () => {
+      if (!user) return;
+
       try {
-        // const response = await axios.get("/api/cart"); // Replace with the actual API endpoint
-        setCart(response.data);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
+        setLoading(true);
+        const response = await axios.get(
+          "https://snap-thrift-backend.onrender.com/cart/getCart",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          setCartData(response.data.data);
+          console.log("Cart data:", response.data.data);
+        }
+      } catch (err) {
+        setError("Failed to load cart items");
+        console.error("Error fetching cart:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCartData();
-  }, []);
+    fetchCart();
+  }, [user]);
 
-  const handleQuantityChange = (id, quantity) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(quantity, 1) } : item
-      )
+  const handleQuantityChange = async (productId, type) => {
+    try {
+      const response = await axios.put(
+        "https://snap-thrift-backend.onrender.com/cart/updateQuantity",
+        { productId, type },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      if (response.data.success) {
+        setCartData(response.data.data);
+        console.log("Updated cart data:", response.data.data);
+      }
+    } catch (err) {
+      console.error("Error updating quantity:", err);
+    }
+  };
+
+  const handleRemove = async (productId) => {
+    try {
+      const response = await axios.delete(
+        `https://snap-thrift-backend.onrender.com/cart/remove/${productId}`,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      if (response.data.success) {
+        setCartData(response.data.data);
+        console.log("Removed item, updated cart data:", response.data.data);
+      }
+    } catch (err) {
+      console.error("Error removing item:", err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-gray-600">Loading your cart...</p>
+      </div>
     );
-  };
+  }
 
-  const handleRemoveItem = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-  };
-
-  const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-  };
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#5F41E4] mb-8">
+          Your Cart
+        </h1>
 
-      <div className="bg-white py-8 flex-grow">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">Shopping Cart</h1>
+        {!cartData || cartData.products.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center">
+            <p className="text-lg text-gray-600">Your cart is empty</p>
+            <a
+              href="/shop"
+              className="mt-4 inline-block px-6 py-2 bg-[#5F41E4] text-white rounded-lg hover:bg-[#4e37c0] transition-colors"
+            >
+              Continue Shopping
+            </a>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="space-y-6">
+              {cartData.products.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex flex-col md:flex-row items-center justify-between border-b pb-6 last:border-b-0"
+                >
+                  <div className="flex items-center gap-4 w-full md:w-auto">
+                    <img
+                      src={item.productImage[0]?.url}
+                      alt={item.productName}
+                      className="w-24 h-24 object-cover rounded-md"
+                    />
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {item.productName}
+                      </h3>
+                      <p className="text-[#5F41E4] font-medium">
+                        Rs {parseFloat(item.productPrice).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
 
-          {cart.length > 0 ? (
-            <div>
-              <div className="overflow-x-auto">
-                <table className="table-auto w-full border-collapse border border-gray-200">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-200 px-4 py-2">Product</th>
-                      <th className="border border-gray-200 px-4 py-2">Category</th>
-                      <th className="border border-gray-200 px-4 py-2">Price</th>
-                      <th className="border border-gray-200 px-4 py-2">Quantity</th>
-                      <th className="border border-gray-200 px-4 py-2">Total</th>
-                      <th className="border border-gray-200 px-4 py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cart.map((item) => (
-                      <tr key={item.id} className="text-center">
-                        <td className="border border-gray-200 px-4 py-2">{item.name}</td>
-                        <td className="border border-gray-200 px-4 py-2">{item.category}</td>
-                        <td className="border border-gray-200 px-4 py-2">${item.price.toFixed(2)}</td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          <input
-                            type="number"
-                            className="w-16 p-1 border border-gray-300 rounded text-center"
-                            value={item.quantity}
-                            onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
-                          />
-                        </td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          ${(item.price * item.quantity).toFixed(2)}
-                        </td>
-                        <td className="border border-gray-200 px-4 py-2">
-                          <button
-                            onClick={() => handleRemoveItem(item.id)}
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <div className="text-lg font-semibold">
-                  Total: <span className="text-green-600">${calculateTotal()}</span>
+                  <div className="flex items-center gap-6 mt-4 md:mt-0">
+                    <div className="flex items-center border rounded-lg">
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.productId, "decrement")
+                        }
+                        className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg"
+                      >
+                        -
+                      </button>
+                      <span className="px-4 py-1">1</span>
+                      <button
+                        onClick={() =>
+                          handleQuantityChange(item.productId, "increment")
+                        }
+                        className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => handleRemove(item.productId)}
+                      className="text-red-500 hover:text-red-600 font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ))}
+            </div>
 
-              <div className="mt-6 flex justify-end">
-                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <div className="mt-8 border-t pt-6">
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-lg font-semibold text-gray-800">Total:</span>
+                <span className="text-2xl font-bold text-[#5F41E4]">
+                  Rs {parseFloat(cartData.totalAmount).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-end gap-4">
+                <a
+                  href="/shop"
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  Continue Shopping
+                </a>
+                <button className="px-6 py-2 bg-[#5F41E4] text-white rounded-lg hover:bg-[#4e37c0] transition-colors">
                   Proceed to Checkout
                 </button>
               </div>
             </div>
-          ) : (
-            <p className="text-center text-gray-500">Your cart is empty.</p>
-          )}
-        </div>
-      </div>
-
+          </div>
+        )}
+      </main>
       <Footer />
     </div>
   );
