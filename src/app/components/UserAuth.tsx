@@ -27,15 +27,16 @@ const useAuth = () => {
           withCredentials: true,
         });
 
-        console.log("Response data:", res.data);
+        console.log("Response data ofuser:", res);
 
         if (res.data.success) {
           console.log("User data fetched successfully:", res.data.data);
           setUser(res.data.data);
-        } else {
-          console.log("Failed to fetch user:", res.data.message);
-          setUser(null);
-        }
+        } 
+        // else {
+        //   console.log("Failed to fetch user:", res.data.message);
+        //   setUser(null);
+        // }
       } catch (err) {
         console.error("Error fetching user:", err);
 
@@ -54,6 +55,8 @@ const useAuth = () => {
 
     fetchUser();
   }, []);
+
+  console.log("user in last line of userauth", user)
 
   return { user, loading };
 };

@@ -1,50 +1,53 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Link from 'next/link';
-import Sidebar from '@/app/components/Sidebar';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Sidebar from "@/app/components/Sidebar";
+import { useRouter } from "next/navigation";
 
 const PharmacistAdminPanel = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [selectedSection, setSelectedSection] = useState('createProduct');
-  const accessToken = localStorage.getItem('token');
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [selectedSection, setSelectedSection] = useState("createProduct");
+  const accessToken = localStorage.getItem("token");
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    price: '',
+    name: "",
+    price: "",
     image: null,
-    expiryDate: '',
+    expirydate: "",
   });
   const [editingProduct, setEditingProduct] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     if (!accessToken) {
-      setErrorMessage('You must be logged in to access this page.');
+      setErrorMessage("You must be logged in to access this page.");
       return;
     }
 
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          'https://pharmaconnect-backend.onrender.com/products/getAllProduct',
+          "https://pharmaconnect-backend.onrender.com/products/getAllProduct",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           }
         );
-        console.log('Fetched products:', response.data.data);
+        console.log("Fetched products yeta ko:", response.data.data);
         setProducts(response.data.data);
+        setError("");
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        setError('Error fetching products. Please try again later.');
+      } catch (error: any) {
+        console.log("Error fetching products:", error.response);
+        setError(
+          error.response?.data.message ||
+            "Error fetching products. Please try again later."
+        );
         setLoading(false);
       }
     };
@@ -61,59 +64,63 @@ const PharmacistAdminPanel = () => {
           },
         }
       );
-      console.log('Deleted product with ID:', id);
+      console.log("Deleted product with ID:", id);
       setProducts(products.filter((product) => product._id !== id));
     } catch (error) {
-      console.error('Error deleting product:', error);
-      setError('Error deleting the product.');
+      console.error("Error deleting product:", error);
+      setError("Error deleting the product.");
     }
   };
 
   const handleAddProduct = async (e) => {
+    console.log("new product", newProduct);
     e.preventDefault();
-    setSuccessMessage('');
-    setErrorMessage('');
+    setSuccessMessage("");
+    setErrorMessage("");
 
     if (!accessToken) {
-      setErrorMessage('You must be logged in to add a product.');
+      setErrorMessage("You must be logged in to add a product.");
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append('name', newProduct.name);
-      formData.append('price', newProduct.price);
-      formData.append('image', newProduct.image);
-      formData.append('expiryDate', newProduct.expiryDate);
+      formData.append("name", newProduct.name);
+      formData.append("price", newProduct.price);
+      formData.append("image", newProduct.image);
+      formData.append("expirydate", newProduct.expirydate);
 
       const response = await axios.post(
-        'https://pharmaconnect-backend.onrender.com/products/createProduct',
+        "https://pharmaconnect-backend.onrender.com/products/createProduct",
         formData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      console.log('Product added:', response.data.data);
+      console.log("Product added:", response.data.data);
       if (response.data && response.data.data) {
         setProducts((prevProducts) => [...prevProducts, response.data.data]);
-        setSuccessMessage('Product added successfully!');
-        setNewProduct({ name: '', price: '', image: null, expiryDate: '' });
+        setSuccessMessage("Product added successfully!");
+        setNewProduct({ name: "", price: "", image: null, expirydate: "" });
       } else {
-        setErrorMessage('Unexpected response format from server.');
+        setErrorMessage("Unexpected response format from server.");
       }
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error("Error adding product:", error);
       setErrorMessage(
-        `Error adding product: ${error.response ? error.response.data.message : error.message}`
+        `Error adding product: ${
+          error.response ? error.response.data.message : error.message
+        }`
       );
     }
   };
 
   const handleEditProduct = (product) => {
-    console.log('Editing product:', product);
+    console.log("Editing product:", product);
     setEditingProduct(product);
     setNewProduct({
       name: product.name,
@@ -121,25 +128,25 @@ const PharmacistAdminPanel = () => {
       image: null,
       expiryDate: product.expiryDate,
     });
-    setSelectedSection('editProduct');
+    setSelectedSection("editProduct");
   };
 
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
-    setSuccessMessage('');
-    setErrorMessage('');
+    setSuccessMessage("");
+    setErrorMessage("");
 
     if (!accessToken) {
-      setErrorMessage('You must be logged in to update a product.');
+      setErrorMessage("You must be logged in to update a product.");
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append('name', newProduct.name);
-      formData.append('price', newProduct.price);
-      if (newProduct.image) formData.append('image', newProduct.image);
-      formData.append('expiryDate', newProduct.expiryDate);
+      formData.append("name", newProduct.name);
+      formData.append("price", newProduct.price);
+      if (newProduct.image) formData.append("image", newProduct.image);
+      formData.append("expiryDate", newProduct.expiryDate);
 
       const response = await axios.put(
         `https://pharmaconnect-backend.onrender.com/products/updateProduct/${editingProduct._id}`,
@@ -151,45 +158,69 @@ const PharmacistAdminPanel = () => {
         }
       );
 
-      console.log('Product updated:', response.data.data);
+      console.log("Product updated:", response.data.data);
       if (response.data && response.data.data) {
         setProducts(
           products.map((product) =>
             product._id === editingProduct._id ? response.data.data : product
           )
         );
-        setSuccessMessage('Product updated successfully!');
-        setSelectedSection('productList');
+        setSuccessMessage("Product updated successfully!");
+        setSelectedSection("productList");
       } else {
-        setErrorMessage('Unexpected response format from server.');
+        setErrorMessage("Unexpected response format from server.");
       }
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error("Error updating product:", error);
       setErrorMessage(
-        `Error updating product: ${error.response ? error.response.data.message : error.message}`
+        `Error updating product: ${
+          error.response ? error.response.data.message : error.message
+        }`
       );
     }
   };
 
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   if (name === 'image') {
+  //     setNewProduct({ ...newProduct, [name]: e.target.files[0] });
+  //   } else {
+  //     setNewProduct({ ...newProduct, [name]: value });
+  //   }
+  // };
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'image') {
-      setNewProduct({ ...newProduct, [name]: e.target.files[0] });
-    } else {
-      setNewProduct({ ...newProduct, [name]: value });
-    }
+    const { name, value, files } = e.target;
+    setNewProduct((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value, // Handle file input correctly
+    }));
   };
+
+  console.log("error", error);
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar selectedSection={selectedSection} setSelectedSection={setSelectedSection} />
+      <Sidebar
+        selectedSection={selectedSection}
+        setSelectedSection={setSelectedSection}
+      />
       <main className="flex-1 p-8 overflow-auto bg-gray-100">
-        {selectedSection === 'addProduct' && (
+        {selectedSection === "addProduct" && (
           <section>
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Add New Product</h2>
-            {errorMessage && <div className="text-red-600 mb-4">{errorMessage}</div>}
-            {successMessage && <div className="text-green-600 mb-4">{successMessage}</div>}
-            <form onSubmit={handleAddProduct} className="space-y-6 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+              Add New Product
+            </h2>
+            {errorMessage && (
+              <div className="text-red-600 mb-4">{errorMessage}</div>
+            )}
+            {successMessage && (
+              <div className="text-green-600 mb-4">{successMessage}</div>
+            )}
+            <form
+              onSubmit={handleAddProduct}
+              className="space-y-6 max-w-2xl mx-auto"
+            >
               <input
                 type="text"
                 name="name"
@@ -217,8 +248,8 @@ const PharmacistAdminPanel = () => {
               />
               <input
                 type="date"
-                name="expiryDate"
-                value={newProduct.expiryDate}
+                name="expirydate"
+                value={newProduct.expirydate}
                 onChange={handleInputChange}
                 className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
@@ -233,12 +264,21 @@ const PharmacistAdminPanel = () => {
           </section>
         )}
 
-        {selectedSection === 'editProduct' && editingProduct && (
+        {selectedSection === "editProduct" && editingProduct && (
           <section>
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Edit Product</h2>
-            {errorMessage && <div className="text-red-600 mb-4">{errorMessage}</div>}
-            {successMessage && <div className="text-green-600 mb-4">{successMessage}</div>}
-            <form onSubmit={handleUpdateProduct} className="space-y-6 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+              Edit Product
+            </h2>
+            {errorMessage && (
+              <div className="text-red-600 mb-4">{errorMessage}</div>
+            )}
+            {successMessage && (
+              <div className="text-green-600 mb-4">{successMessage}</div>
+            )}
+            <form
+              onSubmit={handleUpdateProduct}
+              className="space-y-6 max-w-2xl mx-auto"
+            >
               <input
                 type="text-black"
                 name="name"
@@ -265,8 +305,8 @@ const PharmacistAdminPanel = () => {
               />
               <input
                 type="date"
-                name="expiryDate"
-                value={newProduct.expiryDate}
+                name="expirydate"
+                value={newProduct.expirydate}
                 onChange={handleInputChange}
                 className="p-4 border border-gray-300 rounded-lg w-full shadow-sm text-black"
                 required
@@ -281,9 +321,12 @@ const PharmacistAdminPanel = () => {
           </section>
         )}
 
-        {selectedSection === 'productList' && (
+        {selectedSection === "productList" && (
           <section>
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Product List</h2>
+            <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+              Product List
+            </h2>
+            {error && (<p className="text-xl text-gray-400">{error}</p>)}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               {products.map((product) => (
                 <div
@@ -295,10 +338,15 @@ const PharmacistAdminPanel = () => {
                     alt={product.name}
                     className="w-full h-40 object-cover rounded-lg mb-4"
                   />
-                  <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
-                  <p className="text-lg font-bold text-green-600">${product.price}</p>
+                  <h3 className="text-xl font-semibold text-gray-800">
+                    {product.name}
+                  </h3>
+                  <p className="text-lg font-bold text-green-600">
+                    ${product.price}
+                  </p>
                   <p className="text-sm text-gray-500">
-                    Expiry Date: {new Date(product.expiryDate).toLocaleDateString()}
+                    Expiry Date:{" "}
+                    {new Date(product.expirydate).toLocaleDateString()}
                   </p>
                   <div className="flex gap-4 mt-4">
                     <button
