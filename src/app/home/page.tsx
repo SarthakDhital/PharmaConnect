@@ -87,7 +87,7 @@ const Home = () => {
         <div className="container mx-auto text-center">
           <h1 className="text-6xl font-extrabold mb-6 drop-shadow-lg">Your Trusted Pharmacy</h1>
           <p className="text-xl mb-8">Fast delivery, genuine products, and exceptional service.</p>
-          <Link href="/product" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-3 rounded-lg font-bold shadow-md transition-transform transform hover:scale-105">
+          <Link href="../product" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-3 rounded-lg font-bold shadow-md transition-transform transform hover:scale-105">
             Shop Now
           </Link>
         </div>
@@ -138,7 +138,7 @@ const ProductCard = ({ product }) => {
       </div>
       <h2 className="text-xl font-semibold text-gray-800 mb-2">{product.name}</h2>
       <p className="text-gray-500 mb-2">{product.category}</p>
-      <p className="text-lg font-bold text-green-600 mb-4">${product.price}</p>
+      <p className="text-lg font-bold text-green-600 mb-4">Rs.{product.price}</p>
       <Link href={`/productdetails/${product._id}`}>
         <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
           View Details

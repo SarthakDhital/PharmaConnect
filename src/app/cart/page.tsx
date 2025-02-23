@@ -4,7 +4,7 @@ import axios from "axios";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import useAuth from "../components/UserAuth";
-
+import Link from "next/link";
 const accessToken = localStorage.getItem("token");
 
 const CartPage = () => {
@@ -96,12 +96,13 @@ const CartPage = () => {
       }
     } catch (err) {
       console.log("Error removing item:", err);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
-
+  const handleCheckout = () => {
+    router.push("/checkout"); // Redirect to the checkout page
+  };
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -120,7 +121,6 @@ const CartPage = () => {
 
   console.log("cart data", cartData);
 
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -133,7 +133,7 @@ const CartPage = () => {
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
             <p className="text-lg text-gray-600">Your cart is empty</p>
             <a
-              href="/shop"
+              href="../product"
               className="mt-4 inline-block px-6 py-2 bg-[#5F41E4] text-white rounded-lg hover:bg-[#4e37c0] transition-colors"
             >
               Continue Shopping
@@ -205,14 +205,16 @@ const CartPage = () => {
               </div>
               <div className="flex justify-end gap-4">
                 <a
-                  href="/shop"
+                  href="../product"
                   className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   Continue Shopping
                 </a>
+                <Link href="../checkout">
                 <button className="px-6 py-2 bg-[#5F41E4] text-white rounded-lg hover:bg-[#4e37c0] transition-colors">
                   Proceed to Checkout
                 </button>
+                </Link>
               </div>
             </div>
           </div>

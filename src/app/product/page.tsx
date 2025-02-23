@@ -104,7 +104,7 @@ const ProductList = () => {
                   </h2>
                   <p className="text-gray-500">{product.category}</p>
                   <p className="text-lg font-bold text-green-600">
-                    ${product.price}
+                    Rs.{product.price}
                   </p>
                   <Link href={`/productdetails/${product._id}`}>
                     <button className="mt-4 w-full py-2 bg-blue-600 text-white 
